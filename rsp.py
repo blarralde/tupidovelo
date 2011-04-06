@@ -1,4 +1,5 @@
 import random
+import sys
 
 ROCK = 0
 PAPER = 1
@@ -13,13 +14,44 @@ class RandomOpponent(object):
   def Pick(self, game):
     return random.choice(ALL_OPTIONS)
 
+class RandomBeaterWeighted(object):
+  def Pick(self, game):
+    frequency_rock = 0
+    frequency_paper = 0
+    frequency_scissors = 0
+    for choice_them in game.choices_them:
+      if choice_them == ROCK:
+        frequency_rock += 1 * game.current_round
+      elif choice_them == PAPER:
+        frequency_paper += 1 * game.current_round
+      elif choice_them == SCISSORS:
+        frequency_scissors += 1 * game.current_round
+
+    print "current stats: r/p/s | %d/%d/%d" % (frequency_rock, frequency_paper, frequency_scissors)
+
+    if (frequency_rock < frequency_scissors and frequency_rock < frequency_paper):
+      return PAPER
+    elif (frequency_paper < frequency_scissors and frequency_paper < frequency_rock):
+      return SCISSORS
+    elif (frequency_scissors < frequency_rock and frequency_scissors < frequency_paper):
+      return ROCK
+    # Ties
+    elif (frequency_rock == frequency_scissors):
+      return random.choice([PAPER, ROCK])
+    elif (frequency_rock == frequency_paper):
+      return random.choice([PAPER, SCISSORS])
+    elif (frequency_paper == frequency_scissors):
+      return random.choice([SCISSORS, ROCK])
+    # Complete tie
+    else:
+      return random.choice([ROCK, SCISSORS, PAPER])
 
 class RandomBeater(object):
   def Pick(self, game):
     frequency_rock = 0
     frequency_paper = 0
     frequency_scissors = 0
-    for choice_them in game.choices_them[-100:]:
+    for choice_them in game.choices_them:
       if choice_them == ROCK:
         frequency_rock += 1
       elif choice_them == PAPER:
@@ -33,8 +65,18 @@ class RandomBeater(object):
       return PAPER
     elif (frequency_paper < frequency_scissors and frequency_paper < frequency_rock):
       return SCISSORS
-    else:
+    elif (frequency_scissors < frequency_rock and frequency_scissors < frequency_paper):
       return ROCK
+    # Ties
+    elif (frequency_rock == frequency_scissors):
+      return random.choice([PAPER, ROCK])
+    elif (frequency_rock == frequency_paper):
+      return random.choice([PAPER, SCISSORS])
+    elif (frequency_paper == frequency_scissors):
+      return random.choice([SCISSORS, ROCK])
+    # Complete tie
+    else:
+      return random.choice([ROCK, SCISSORS, PAPER])
 
 
 class Game(object):
@@ -84,7 +126,7 @@ if __name__ == "__main__":
   random_beater = RandomBeater()
   game = Game()
 
-  for i in range(10000):
+  for i in range(int(sys.argv[1])):
     choice_them = random_opponent.Pick(game)
     choice_us = random_beater.Pick(game)
     game.ResolveRound(choice_us, choice_them)
