@@ -78,12 +78,35 @@ class Strategy(object):
     return self.player_id
 
 
-class Random(Strategy):
+class AlwaysTheSame(Strategy):
+  """Uses the same choice determined at init time on every round."""
+  def __init__(self):
+    self.choice = random.choice([ROCK, SCISSORS, PAPER])
+
+  def Pick(self, gmae):
+    return self.choice
+
+
+class HumanRandom(Strategy):
+  """Picks random elements without repeating."""
   def Pick(self, game):
-    return random.choice(ALL_OPTIONS)
+    if game.current_round == 1:
+        return ROCK
+
+    if self.GetPlayerId() == 1:
+      choices_us = game.choices1
+    else:
+      choices_us = game.choices2
+
+    if choices_us[-1] == ROCK:
+        return random.choice([SCISSORS, PAPER])
+    elif choices_us[-1] == SCISSORS:
+        return random.choice([ROCK, PAPER])
+    else:
+        return random.choice([ROCK, SCISSORS])
 
 
-class RandomBeaterOpposite(Strategy):
+class OppositeOfLast(Strategy):
   """Picks what would be killed by the last option the oppponent picked."""
   def Pick(self, game):
     if game.current_round == 1:
@@ -98,8 +121,13 @@ class RandomBeaterOpposite(Strategy):
         return SCISSORS
     elif choices_them[-1] == SCISSORS:
         return PAPER
-    elif choices_them[-1] == PAPER:
+    else:
         return ROCK
+
+
+class Random(Strategy):
+  def Pick(self, game):
+    return random.choice(ALL_OPTIONS)
 
 
 class RandomBeater(Strategy):
@@ -155,15 +183,6 @@ class RandomBeaterWeighted(RandomBeater):
   def GetRoundWeight(self, round):
     """Returns: the weight given to the option picked in a given round."""
     return round
-
-
-class AlwaysTheSame(Strategy):
-  """Uses the same choice determined at init time on every round."""
-  def __init__(self):
-    self.choice = random.choice([ROCK, SCISSORS, PAPER])
-
-  def Pick(self, gmae):
-    return self.choice
 
 
 class SequentialPicker(Strategy):
@@ -227,8 +246,9 @@ def RunExperiment(strategy1, strategy2, games, rounds_per_game):
 
 def GetStrategies():
   return [AlwaysTheSame,
+          HumanRandom,
+          OppositeOfLast,
           Random,
-          RandomBeaterOpposite,
           RandomBeater,
           RandomBeaterWeighted,
           SequentialPicker,
