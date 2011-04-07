@@ -1,5 +1,5 @@
 """
-Rock, Scissors and Paper battleground simulator.
+Rock, Paper, Scissors battleground simulator.
 
 Usage:
 1. Pit every strategy against each other:
