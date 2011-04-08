@@ -47,17 +47,19 @@ class Game(object):
     self.opponent2.SetPlayerId(2)
 
   def ResolveRound(self, choice1, choice2):
-    logging.debug("%d Choice us: %s | Choice them: %s" % (self.current_round,
-                                                          util.PrettyChoice(choice1),
-                                                          util.PrettyChoice(choice2)))
+    logging.debug("%d Choice us: %s | Choice them: %s" %
+       (self.current_round,
+        util.PrettyChoice(choice1),
+        util.PrettyChoice(choice2)))
+
     self.choices1.append(choice1)
     self.choices2.append(choice2)
 
     if choice2 == choice1:
       self.rounds_results.append(TIE)
     elif ((choice1 == ROCK and choice2 == SCISSORS) or
-         (choice1 == PAPER and choice2 == ROCK) or
-         (choice1 == SCISSORS and choice2 == PAPER)):
+          (choice1 == PAPER and choice2 == ROCK) or
+          (choice1 == SCISSORS and choice2 == PAPER)):
       self.wins1 += 1
       self.rounds_results.append(WINS1)
     else:
@@ -99,11 +101,11 @@ class HumanRandom(Strategy):
       choices_us = game.choices2
 
     if choices_us[-1] == ROCK:
-        return random.choice([SCISSORS, PAPER])
+      return random.choice([SCISSORS, PAPER])
     elif choices_us[-1] == SCISSORS:
-        return random.choice([ROCK, PAPER])
+      return random.choice([ROCK, PAPER])
     else:
-        return random.choice([ROCK, SCISSORS])
+      return random.choice([ROCK, SCISSORS])
 
 
 class OppositeOfLast(Strategy):
@@ -157,11 +159,14 @@ class RandomBeater(Strategy):
                                                        self.freq_paper,
                                                        self.freq_scissors))
 
-    if (self.freq_rock < self.freq_scissors and self.freq_rock < self.freq_paper):
+    if (self.freq_rock < self.freq_scissors and
+        self.freq_rock < self.freq_paper):
       return PAPER
-    elif (self.freq_paper < self.freq_scissors and self.freq_paper < self.freq_rock):
+    elif (self.freq_paper < self.freq_scissors and
+          self.freq_paper < self.freq_rock):
       return SCISSORS
-    elif (self.freq_scissors < self.freq_rock and self.freq_scissors < self.freq_paper):
+    elif (self.freq_scissors < self.freq_rock and
+          self.freq_scissors < self.freq_paper):
       return ROCK
     # Ties
     elif (self.freq_rock == self.freq_scissors):
