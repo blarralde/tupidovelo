@@ -463,7 +463,7 @@ if __name__ == "__main__":
                                                    options.rounds))
 
   print "%s    %s avScore1  sdScore1" % ("Opponent 1".ljust(30),
-                                        "Opponent 2".ljust(30))
+                                         "Opponent 2".ljust(30))
   print "-" * 83
   for opponent1, opponent2 in GetPairings(options):
     print "%s    %s" % (opponent1.__name__.ljust(30),
