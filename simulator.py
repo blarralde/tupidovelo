@@ -403,8 +403,7 @@ def RunExperiment(strategy1, strategy2, games, rounds_per_game):
         choice2 = opponent2.Pick(game)
         game.ResolveRound(choice1, choice2)
 
-      if game.wins1 - game.losses1 > game.wins2 -  game.losses2:
-        inner_wins += 1
+      inner_wins += game.wins1 - game.losses1
 
     wins.append(float(inner_wins)/games)
     logging.debug("game_idx %d | %.2f" % (game_idx2, wins[-1]))
@@ -463,13 +462,13 @@ if __name__ == "__main__":
   logging.info("Games: %d\nRounds per game: %d\n" % (options.games,
                                                    options.rounds))
 
-  print "%s    %s 1Wins2     sd" % ("Opponent 1".ljust(30),
-                                     "Opponent 2".ljust(30))
-  print "-" * 78
+  print "%s    %s avScore1  sdScore1" % ("Opponent 1".ljust(30),
+                                        "Opponent 2".ljust(30))
+  print "-" * 83
   for opponent1, opponent2 in GetPairings(options):
     print "%s    %s" % (opponent1.__name__.ljust(30),
                         opponent2.__name__.ljust(30)),
     mean, stddev = RunExperiment(opponent1, opponent2, options.games,
                                  options.rounds)
-    print "  %.2f   %.2f" % (mean, stddev)
+    print " %s    %s" % (("%.2f" % mean).rjust(7), ("%.2f" % stddev).rjust(6))
 
